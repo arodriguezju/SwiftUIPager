@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 ///
 /// `PagerContent` is the content of `Pager`. This view is needed so that `Pager` wrapps it around a `GeometryReader ` and passes the size in its initializer.
@@ -244,6 +245,15 @@ extension Pager {
                         }
                     }
                     .eraseToAny()
+            }
+            else {
+               resultView = resultView
+                   .onReceive(Just(isGestureFinished)) { value in
+                       if value {
+                           onDragGestureEnded()
+                       }
+                   }
+                   .eraseToAny()
             }
             #endif
 
