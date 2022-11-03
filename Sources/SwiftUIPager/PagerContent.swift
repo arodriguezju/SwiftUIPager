@@ -236,27 +236,6 @@ extension Pager {
                     .eraseToAny()
             }
 
-            #if !os(tvOS)
-            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                resultView = resultView
-                    .onChange(of: isGestureFinished) { value in
-                        if value {
-                            onDragGestureEnded()
-                        }
-                    }
-                    .eraseToAny()
-            }
-            else {
-               resultView = resultView
-                   .onReceive(Just(isGestureFinished)) { value in
-                       if value {
-                           onDragGestureEnded()
-                       }
-                   }
-                   .eraseToAny()
-            }
-            #endif
-
             #if os(watchOS)
             if #available(watchOS 7.0, *), allowsDigitalCrownRotation {
                 resultView = resultView
@@ -333,6 +312,9 @@ extension Pager.PagerContent {
                 if !dragForwardOnly || dragTranslation(for: value).width < 0 {
                     self.onDragChanged(with: value)
                 }
+            })
+            .onEnded({ ended in
+              self.onDragGestureEnded()
             })
     }
 
